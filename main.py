@@ -20,16 +20,16 @@ def build_heap(data, i, swaps):
 def main():
     input_type = input().lower()
 
-    if "I" in input_type:
+    if input_type[0] == "i":
         n = int(input())
         data = list(map(int, input().split()))
-    elif "F" in input_type:
+    elif input_type[0] == "f":
         while True:
             try:
-                file_name = "/tests" + input()
-                with open(file_name, "r", encoding="utf-8") as f:
-                    n = int(f.readline().strip())
-                    data = list(map(int, f.readline().strip().split()))
+                file_name = input()
+                with open(f"tests/{file_name}", "r", encoding="utf-8") as f:
+                    n = int(f.readline())
+                    data = list(map(int, f.readline().split()))
                 break
             except FileNotFoundError:
                 print("File not found, please enter a valid file name")
@@ -50,3 +50,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
