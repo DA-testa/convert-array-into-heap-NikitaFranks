@@ -1,56 +1,52 @@
-import sys
-import threading
-import numpy
+def build_heap(data, i, swaps):
+    n = len(data)
+    min = i
+    l = 2*i+1
+    r = 2*i+2
 
-def read_input():
-    input_type = input().lower()
-    
-    if input_type == "i":
-        n = int(input())
-        parents = list(map(int, input().split()))
+    if l < n and data[l] < data[min]:
+        min = l
         
-    elif input_type == "f":
-        while True:
-            try:
-                file_name = input()
-                if "a" in file_name:
-                    raise ValueError("File name should not contain the letter 'a'")
-                with open(f"test/{file_name}") as f:
-                    n = int(f.readline())
-                    parents = list(map(int, f.readline().split()))
-                break
-            except FileNotFoundError:
-                print("File not found, please enter a valid file name")
-            except ValueError as e:
-                print(e)
-                
-    return n, parents
+    if r < n and data[r] < data[min]:
+        min = r
 
-def compute_height(n, parents):
-    children = [[] for _ in range(n)]
-    for i in range(n):
-        parent = parents[i]
-        if parent == -1:
-            root = i
-        else:
-            children[parent].append(i)
-    
-  
-    def get_height(node):
-        if not children[node]:
-            return 1
-        heights = [get_height(child) for child in children[node]]
-        return 1 + max(heights)
-    
-    return get_height(root)
+    if i != min: 
+        swaps.append((i,min))
+        data[i],data[min] = data[min],data[i]
+        build_heap(data,min,swaps)
+    return swaps
 
 
 def main():
-    n, parents = read_input()
-    print(compute_height(n, parents))
+    input_type = input().lower()
+
+    if "I" in input_type:
+        n = int(input())
+        data = list(map(int, input().split()))
+    elif "F" in input_type:
+        while True:
+            try:
+                file_name = "/tests" + input()
+                with open(file_name, "r", encoding="utf-8") as f:
+                    n = int(f.readline().strip())
+                    data = list(map(int, f.readline().strip().split()))
+                break
+            except FileNotFoundError:
+                print("File not found, please enter a valid file name")
+    else:
+        n = 0
+        data = []
+
+    assert len(data) == n
+    swaps = []
+    for i in range(n//2,-1,-1):
+        swaps = build_heap(data, i, swaps)
+
+   
+    print(len(swaps))
+    for i, j in swaps:
+        print(i, j)
 
 
-
-sys.setrecursionlimit(10**7)  
-threading.stack_size(2**27)   
-threading.Thread(target=main).start()
+if __name__ == "__main__":
+    main()
